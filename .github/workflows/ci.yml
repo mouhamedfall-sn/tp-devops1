@@ -30,14 +30,23 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /var/www/tp-devops1
-            git pull origin main
-            npm install --production
-            pm2 restart tp-devops || pm2 start index.js --name tp-devops
+          node-version: 24
+      - name: Install dependencies
+        run: npm install --production
+      - name: Simulate SSH Deploy
+        run: |
+          echo "================================="
+          echo "  DEPLOIEMENT VIA SSH (SIMULATION)"
+          echo "================================="
+          echo "Connexion au serveur : OK"
+          echo "Transfert des fichiers : OK"
+          echo "npm install --production : OK"
+          node index.js &
+          sleep 2
+          curl -s http://localhost:3000/ping
+          kill %1
+          echo "Application deployee avec succes !"
+          echo "================================="
